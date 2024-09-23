@@ -26,8 +26,11 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #  path("",include("dashboard.urls")),
-    path('', views.dashboard_view, name='dashboard'),
+    #  path('', views.dashboard_view, name='dashboard'),
+    # path('', account_views.login_page, name='login'),  
+    path('',views. account_view, name='login'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('accounts/', include('accounts.urls')),
     
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  
