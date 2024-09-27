@@ -1,4 +1,7 @@
- {% include 'navbar.html' %}
+{% include 'navbar.html' %}
+{% include 'header.html' %}
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,11 +21,12 @@
     />
   </head>
   <body>
+    
     <div class="page">
 
       <div></div>
       <div class="heading">
-        <h5 class="header">Recent Churn Predictions</h5>
+        <h5 class="title">Recent Churn Predictions</h5>
       </div>
       <div class="card-deck">
         <div class="card">
@@ -58,22 +62,6 @@
         margin-top: 1%;
       }
      
-      /* .heading {
-        width: 100%;
-        height: 70px;
-        margin-left: 0%;
-        box-shadow: 1px 1px 2px 2px black;
-        margin-top: -1%;
-      } */
-      .heading {
-        width: 100%; 
-        height: 70px;
-        margin-left:0% ;
-        box-shadow: 1px 1px 4px 4px rgb(107, 106, 106);
-        margin-top: -1%;
-        background-color: white;
-      }
-
       .card-deck {
         margin-left: 20%;
         margin-right: 5%;
@@ -154,25 +142,5 @@
   </body>
 </html> 
 
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h2>Recent Churn Predictions</h2>
-<ul>
-  {% for prediction in recent_predictions %}
-    <li>{{ prediction.customer.name }} - {{ prediction.churn_probability }}% chance of churn on {{ prediction.prediction_date }}</li>
-  {% endfor %}
-</ul>
-
-<h2>Analytics Summary</h2>
-<p>Total Customers: {{ latest_summary.total_customers }}</p>
-<p>Churn Rate: {{ latest_summary.churn_rate }}%</p>
-<p>Average Prediction Accuracy: {{ latest_summary.avg_prediction_accuracy }}%</p> 
-</body>
-</html> -->
 
 

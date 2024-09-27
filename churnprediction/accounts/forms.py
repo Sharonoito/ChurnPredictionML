@@ -7,6 +7,12 @@ from users.models import CustomUser
 
 class CreateUserForm(UserCreationForm):
 
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('organization', 'Organization'),
+        ('customer', 'Customer'),
+    ]
+    
     role = forms.ChoiceField(choices=CustomUser.ROLE_CHOICES, required=True)
     
     class Meta:
