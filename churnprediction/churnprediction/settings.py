@@ -72,7 +72,7 @@ ROOT_URLCONF = 'churnprediction.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,8 +93,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'sandbox.smtp.mailtrap.io' 
 EMAIL_PORT = 587  
 EMAIL_USE_TLS = True 
-EMAIL_HOST_USER = 'c6e0b62495b6f6' 
-EMAIL_HOST_PASSWORD = 'df1c7358a4f3ee'
+EMAIL_HOST_USER = '' 
+EMAIL_HOST_PASSWORD = ''
 
 # Default "from" email address for the Django app
 DEFAULT_FROM_EMAIL = 'oitosharonakoth@gmail.com'
