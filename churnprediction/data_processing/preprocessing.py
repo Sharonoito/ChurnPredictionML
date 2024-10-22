@@ -5,29 +5,33 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.ensemble import RandomForestClassifier
 
-
 def clean_data(df):
-    # Step 1: Handle missing data
-    df['total_charges'] = pd.to_numeric(df['total_charges'], errors='coerce')  # Adjusted to total_charges
-    df.fillna({'total_charges': df['total_charges'].mean()}, inplace=True)  # Adjusted to total_charges
+    # Step 1: Handle missing values
+    # For numerical columns, fill NaN with the median
+    numerical_cols = df.select_dtypes(include=['float64', 'int64']).columns
+    for col in numerical_cols:
+        df[col] = pd.to_numeric(df[col], errors='coerce')  # Convert to numeric, setting errors to NaN
+        df[col].fillna(df[col].median(), inplace=True)  # Fill NaN with median
 
-    # Step 2: Encode categorical variables
-    label_encoder = LabelEncoder()
-    df['gender'] = label_encoder.fit_transform(df['gender'])  # Convert gender to numeric (0 or 1)
-
-    # Other categorical fields to encode
-    categorical_cols = ['multiple_lines', 'internet_service', 'online_security', 'online_backup', 
-                        'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies', 
-                        'contract', 'payment_method']
-    
+    # For categorical columns, fill NaN with the mode
+    categorical_cols = df.select_dtypes(include=['object']).columns
     for col in categorical_cols:
-        df[col] = label_encoder.fit_transform(df[col].astype(str))
+        df[col] = df[col].astype(str).str.strip()  # Ensure it's treated as a string and strip whitespace
+        df[col].fillna(df[col].mode()[0], inplace=True)
 
-    # Step 3: Normalize numerical features
-    scaler = StandardScaler()
-    df[['tenure', 'monthly_charges', 'total_charges']] = scaler.fit_transform(df[['tenure', 'monthly_charges', 'total_charges']])  # Adjusted to use total_charges
+    # Step 2: Remove leading and trailing spaces from string columns (already done above)
+
+    # Step 3: Convert boolean columns to int (True -> 1, False -> 0)
+    boolean_cols = ['senior_citizen', 'partner', 'dependents', 'phone_service', 'paperless_billing', 'churn']
+    for col in boolean_cols:
+        if col in df.columns:
+            df[col] = df[col].astype(int)
+
+    # Step 4: Convert categorical columns to numeric using one-hot encoding
+    df = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
 
     return df
+
 
 
 def split_data(df):
@@ -37,10 +41,11 @@ def split_data(df):
 
     X = df.drop('churn', axis=1)  # Features
     y = df['churn'].astype(int)   # Target (convert to binary if needed)
-    
+
     # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    return X_train, X_test, y_train, y_test
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    return train_test_split(X, y, test_size=0.2, random_state=42)
+
 
 
 def train_model(X_train, y_train, X_test, y_test):
