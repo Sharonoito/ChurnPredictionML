@@ -17,13 +17,19 @@
 <body>
     <div class="header">
         <div class="logo">
-            <img src="https://www.clipartmax.com/png/middle/182-1821286_beautiful-black-woman-avatar-character-black-lady-cartoon.png" alt="Logo" style="height: 20px; float: right;"/>
+            <img src="https://www.clipartmax.com/png/middle/182-1821286_beautiful-black-woman-avatar-character-black-lady-cartoon.png" alt="Logo" style="height: 20px; float: right;" />
         </div>
         <div class="userprofile">
             <img
               src="https://www.clipartmax.com/png/middle/182-1821286_beautiful-black-woman-avatar-character-black-lady-cartoon.png"
-          class="profile"  />
-            <p style="color: black;">Jane Doe</p>
+              class="profile"  
+            />
+            <!-- Display the logged-in user's username -->
+            {% if user.is_authenticated %}
+                <p style="color: black;">{{ user.username }}</p> <!-- Display the username -->
+            {% else %}
+                <p style="color: black;">Guest</p> <!-- If not logged in, show "Guest" -->
+            {% endif %}
         </div>
     </div>
 
@@ -35,16 +41,17 @@
             padding: 10px 20px;
             box-shadow: 1px 1px 4px 4px rgb(155, 153, 153);
             background-color: white;
-            
         }
 
         .logo img {
             height: 20px; /* Adjust as needed */
         }
+
         .userprofile {
             display: flex;
             align-items: center;
         }
+
         .userprofile img {
             border-radius: 50%;
             height: 40px; /* Adjust as needed */

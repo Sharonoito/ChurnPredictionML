@@ -1,18 +1,18 @@
+import json
+from django.conf import settings
 import pandas as pd
-from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
+from django.core.files.storage import FileSystemStorage
+import joblib
+import os
 from .models import Customer
 from .forms import UploadFileForm
 from data_processing.preprocessing import clean_data
-
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
-import joblib
-from .models import Customer
-import os
 
-
+# Upload customer data to the database
 def upload_customer_data(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -67,10 +67,9 @@ def upload_customer_data(request):
                             'churn': bool(row['Churn']),
                         }
                     )
-                    
+
                     # If created is False, the customer already exists, and you can handle updates if needed.
                     if not created:
-                        # Optionally, update fields here if necessary
                         customer.gender = row['gender']
                         customer.senior_citizen = bool(row['SeniorCitizen'])
                         customer.partner = bool(row['Partner'])
@@ -99,67 +98,119 @@ def upload_customer_data(request):
 
     return render(request, 'upload_customer_data.html', {'form': form})
 
+# View the list of customers
 def customer_list(request):
     customers = Customer.objects.all()
     return render(request, 'customer_list.html', {'customers': customers})
+
+# View for the prediction results
+from django.http import JsonResponse
+
+from sklearn.metrics import confusion_matrix
+
+from sklearn.metrics import confusion_matrix
+
 def prediction_results(request):
-    # Load customer data from the database
+    # Load customer data and proceed as before
     customers = Customer.objects.all()
     customer_df = pd.DataFrame(list(customers.values()))
 
-    # Ensure 'customerID' is excluded from numeric conversions
-    customer_id_col = customer_df['customerID']  # Store 'customerID' separately
-
-    # Convert relevant columns to numeric, excluding 'customerID'
+    customer_id_col = customer_df['customerID']
     customer_df['monthly_charges'] = pd.to_numeric(customer_df['monthly_charges'], errors='coerce')
     customer_df['total_charges'] = pd.to_numeric(customer_df['total_charges'], errors='coerce')
-
-    # Handle NaNs after conversion
     customer_df.fillna(0, inplace=True)
-
-    # Data cleaning and preprocessing (excluding 'customerID')
     customer_df = clean_data(customer_df.drop(columns=['customerID']))
-
-    # Reattach 'customerID' after preprocessing
     customer_df['customerID'] = customer_id_col
 
-    # Ensure that 'customerID' is not included in the feature set for model training
-    X = customer_df.drop(columns=['churn', 'customerID'])  # Drop 'customerID' and 'churn' from features
+    X = customer_df.drop(columns=['churn', 'customerID'])
     y = customer_df['churn']
 
-    # Splitting the data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Model selection and training
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
 
-    # Evaluation
     y_pred = model.predict(X_test)
     report = classification_report(y_test, y_pred, output_dict=True)
 
-    # Save the trained model
-    model_path = 'models/churn_model.pkl'
+    # Confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+    
+    # Check if the confusion matrix is 2x2
+    if cm.shape == (2, 2):
+        tn, fp, fn, tp = cm.ravel()
+    else:
+        # Handle case where there is not enough data for a full confusion matrix
+        tn = fp = fn = tp = 0
+
+    # Additional metrics: precision, recall, f1_score
+    precision = report['weighted avg']['precision']
+    recall = report['weighted avg']['recall']
+    f1_score = report['weighted avg']['f1-score']
+
+    # Prediction counts (unchanged from before)
+    prediction_counts = pd.Series(y_pred).value_counts()
+    prediction_data = {
+        'labels': prediction_counts.index.tolist(),
+        'data': prediction_counts.values.tolist()
+    }
+
+    return render(request, 'prediction_results.html', {
+        'report': {
+            'accuracy': model.score(X_test, y_test),
+            'precision': precision,
+            'recall': recall,
+            'f1_score': f1_score,
+            'confusion_matrix': cm.tolist(),  # Passing confusion matrix to template
+        },
+        'prediction_data': prediction_data
+    })
+
+
+def prediction_reports(request):
+    # Load customer data and proceed as before
+    customers = Customer.objects.all()
+    customer_df = pd.DataFrame(list(customers.values()))
+
+    customer_id_col = customer_df['customerID']
+    customer_df['monthly_charges'] = pd.to_numeric(customer_df['monthly_charges'], errors='coerce')
+    customer_df['total_charges'] = pd.to_numeric(customer_df['total_charges'], errors='coerce')
+    customer_df.fillna(0, inplace=True)
+    customer_df = clean_data(customer_df.drop(columns=['customerID']))
+    customer_df['customerID'] = customer_id_col
+
+    X = customer_df.drop(columns=['churn', 'customerID'])
+    y = customer_df['churn']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+    report = classification_report(y_test, y_pred, output_dict=True)
+
+    model_path = os.path.join(settings.BASE_DIR, 'models', 'churn_model.pkl')
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     joblib.dump(model, model_path)
 
-    # Filter for a specific customer based on Customer ID if provided
     customer_id = request.GET.get('customer_id', None)
     if customer_id:
         customer_df = customer_df[customer_df['customerID'].astype(str).str.contains(customer_id)]
 
-    # If there are no records for the searched customer
     if customer_df.empty:
         return render(request, 'error.html', {'message': f'No customer found with ID: {customer_id}'})
 
-    # Make predictions on the filtered data
     X_test_filtered = customer_df.drop(columns=['churn', 'customerID'], errors='ignore')
-
-    # Combine predictions with customer IDs
     predictions = dict(zip(customer_df['customerID'], model.predict(X_test_filtered)))
 
-    # Render the results
-    return render(request, 'prediction_results.html', {
+    # Calculate prediction counts
+    prediction_counts = pd.Series(predictions.values()).value_counts()
+    prediction_data = {
+        'labels': prediction_counts.index.tolist(),
+        'data': prediction_counts.values.tolist()
+    }
+
+    # Pass the prediction data to the template
+    return render(request, 'prediction_reports.html', {
         'report': {
             'predictions': predictions,
             'accuracy': model.score(X_test_filtered, customer_df['churn']) if 'churn' in customer_df.columns else 'N/A',
@@ -168,5 +219,10 @@ def prediction_results(request):
                 'recall': report['weighted avg']['recall'],
                 'f1_score': report['weighted avg']['f1-score'],
             }
+        },
+        'prediction_data': {
+            'labels': json.dumps(prediction_counts.index.tolist()),  # Convert to JSON string
+            'data': json.dumps(prediction_counts.values.tolist())    # Convert to JSON string
         }
     })
+ 

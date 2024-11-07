@@ -23,8 +23,9 @@
           <div class="profile">
             <img
               src="https://www.clipartmax.com/png/middle/182-1821286_beautiful-black-woman-avatar-character-black-lady-cartoon.png"
-          class="profile"  />
-          <p style="color: white; margin-left: 25%">Jane Doe</p>
+
+              class="profile"  />
+            <p style="color: white; margin-left: 25%">{{ user.username }}</p> <!-- Dynamically display logged-in user's username -->
           </div>
           <br></br>
           <li class="nav-list">
@@ -38,16 +39,15 @@
           </li>
 
           <li class="nav-list">
-            <a href="{% url 'dashboard' %}">Users</a>
-          </li>
-          <li class="nav-list">
-            <a href="{% url 'dashboard' %}">Log Out</a>
+            <a href="{% url 'prediction_reports' %}">Reports</a>
           </li>
 
- 
+          <!-- Update the Log Out link to point to the logout URL -->
+          <li class="nav-list">
+            <a href="{% url 'logout' %}">Log Out</a>  <!-- This is the key change -->
+          </li>
         </ul>
       </div>
-    
     </div>
 
     <style>
@@ -55,7 +55,6 @@
         margin-top: 1%;
       }
 
-  
       h5 {
         text-align: center;
         margin-top: 10%;
@@ -73,9 +72,8 @@
         margin-top: 0%;
       }
       @media screen and (max-width: 420px) {
-        /*According to mobile size you can change the width*/
         .bt-contact {
-          padding-left: 100px; /* give some less px value */
+          padding-left: 100px;
         }
       }
       .mytop-navi {
@@ -116,8 +114,6 @@
         margin-left: 15%;
         width: 90px;
       }
-
-     
     </style>
   </body>
 </html>

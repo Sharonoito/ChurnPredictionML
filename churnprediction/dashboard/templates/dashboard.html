@@ -1,7 +1,6 @@
 {% include 'navbar.html' %}
 {% include 'header.html' %}
 
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -19,128 +19,167 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-  </head>
-  <body>
-    
-    <div class="page">
-
-      <div></div>
-      <div class="heading">
-        <h5 class="title">Recent Churn Predictions</h5>
-      </div>
-      <div class="card-deck">
-        <div class="card">
-          <div class="card-body" style="background-color: rgba(1,135,144,255)">   
-            <h5 class="card-title">
-                Customers
-            </h5>
-          </div>
-        </div>
-        <div class="card card1">
-          <div class="card-body" style="background-color: white">
-            <h5 class="card-title" style="color: black;">
-                Prediction
-            </h5>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body" style="background-color: rgba(1,135,144,255)">
-            <h5 class="card-title">
-              My History
-            </h5>
-          </div>
-        </div>
-      </div>
-
-    </div>
 
     <style>
-      body{
+      body {
         background-color: #eff0e8;
+        font-family: 'Arial', sans-serif;
       }
+
       .page {
-        margin-top: 1%;
+        margin-top: 2%;
       }
-     
-      .card-deck {
-        margin-left: 20%;
-        margin-right: 5%;
-      }
-      .card {
-        margin: 2%;
-        height: 130px;
-        box-shadow: 1px 1px 4px 4px rgb(107, 106, 106);
-        color: white;
-      }
-      h5 {
+
+      .heading {
         text-align: center;
-        margin-top: 10%;
-      }
-      h5 a {
-        color: white;
-      }
-      h5 a:hover {
-        color: white;
-        text-decoration: none;
+        margin-bottom: 30px;
       }
 
       .heading h5 {
-        text-align: center;
-        margin-top: 0%;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #018790;
       }
-      @media screen and (max-width: 420px) {
-        /*According to mobile size you can change the width*/
-        .bt-contact {
-          padding-left: 100px; /* give some less px value */
+
+      /* Card Deck Styling */
+      .card-deck {
+        margin-left: 5%;
+        margin-right: 5%;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      /* General Card Styling */
+      .card {
+        margin: 20px;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        width: 50%; /* Increased width of the cards */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+      }
+
+      /* Card Hover Effect */
+      .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Card Body Styling */
+      .card-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Card Colors */
+      .card-1 {
+        background-color: rgba(1, 135, 144, 255);
+      }
+
+      .card-2 {
+        background-color: white;
+        color: black;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .card-3 {
+        background-color: rgba(1, 135, 144, 255);
+      }
+
+      .card a {
+        text-decoration: none;
+        color: white;
+        width: 100%;
+        height: 100%;
+      }
+
+      .card a:hover {
+        text-decoration: none;
+        color: white;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .card-deck {
+          flex-direction: column;
+          margin-left: 5%;
+          margin-right: 5%;
+        }
+
+        .card {
+          width: 90%; /* Occupy more space on smaller screens */
+          margin-bottom: 20px;
         }
       }
-      .mytop-navi {
-        letter-spacing: none;
-        margin: -0.5%;
-        padding-left: 20px;
-        width: 250px;
-        height: 130%;
+
+      /* Optional Tooltip on Cards */
+      .tooltip-inner {
         background-color: #018790;
-        position: fixed;
-        list-style: none;
-      }
-      .mytop-navi .profile {
-        margin-top: 10%;
-      }
-      .nav-list {
-        padding: 1px;
-        margin-top: 15%;
-        text-decoration: none;
-        margin-left: 25%;
-      }
-      .nav-list a {
-        display: block;
-        width: 160px;
         color: white;
-        text-decoration: none;
-        font-size: medium;
-        margin-left: 0%;
-      }
-      .nav-list a:hover {
-        background-color: white;
-        color: #018790;
-        text-decoration: none;
-      }
-      img {
-        border-radius: 50%;
-        height: 90px;
-        margin-left: 15%;
-        width: 90px;
-      }
-      background {
-        background: hsl(312, 23%, 42%) !important;
-      }
-      .heading .header{
-        padding-top:2%;
       }
     </style>
+  </head>
+
+  <body>
+    <div class="container mt-5">
+      <div class="heading">
+        <h5>Recent Churn Predictions</h5>
+      </div>
+
+      <div class="card-deck">
+        <!-- Customers Card -->
+        <div class="card card-1">
+          <a href="{% url 'customer_list' %}">
+            <div class="card-body">
+              <h5 class="card-title">Customers</h5>
+            </div>
+          </a>
+        </div>
+
+        <!-- Prediction Card -->
+        <div class="card card-2">
+          <a href="{% url 'prediction_results' %}">
+            <div class="card-body">
+              <h5 class="card-title" style="color: black;">Prediction</h5>
+            </div>
+          </a>
+        </div>
+
+        <!-- Reports Card -->
+        <div class="card card-3">
+          <a href="{% url 'prediction_reports' %}">
+            <div class="card-body">
+              <h5 class="card-title">Reports</h5>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div style="width: 50%; margin: auto;">
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Line Chart -->
+    <div style="width: 50%; margin: auto; margin-top: 40px;">
+        <canvas id="lineChart"></canvas>
+    </div>
+
+
+
+    </div>
+
+    <!-- Bootstrap JS and Dependencies -->
+     
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
-</html> 
-
-
-
+</html>
