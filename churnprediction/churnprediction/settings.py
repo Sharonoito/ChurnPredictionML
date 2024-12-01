@@ -42,8 +42,20 @@ INSTALLED_APPS = [
     'data_processing',
     'users',
     'rest_framework',
+    'accounts',
+    'userprofile',
+    'admin_dashboard',
+    'customer_dashboard',
+   
 
+ 
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # Default Django backend
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +72,7 @@ ROOT_URLCONF = 'churnprediction.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +86,21 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'churnprediction.wsgi.application'
+
+
+# Email settings for Django
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io' 
+EMAIL_PORT = 587  
+EMAIL_USE_TLS = True 
+EMAIL_HOST_USER = '' 
+EMAIL_HOST_PASSWORD = ''
+
+# Default "from" email address for the Django app
+DEFAULT_FROM_EMAIL = 'oitosharonakoth@gmail.com'
+
+# For debugging (Optional, prints emails to console during development)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Database

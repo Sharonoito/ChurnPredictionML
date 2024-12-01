@@ -1,0 +1,69 @@
+{% include 'navbar.html' %}
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Prediction Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center">Churn Prediction Results</h1>
+
+    <form method="GET" action="{% url 'prediction_reports' %}" class="form-inline justify-content-center">
+        <input type="text" name="customer_id" class="form-control mr-2" placeholder="Enter Customer ID" value="{{ request.GET.customer_id }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <div class="mt-4">
+        <h2>Classification Report</h2>
+        <pre>{{ report | safe }}</pre>
+    </div>
+
+    <div class="mt-4">
+        <h2>Key Metrics</h2>
+        <ul>
+            <li><strong>Accuracy:</strong> {{ report.accuracy }}</li>
+            <li><strong>Precision:</strong> {{ report.weighted_avg.precision }}</li>
+            <li><strong>Recall:</strong> {{ report.weighted_avg.recall }}</li>
+            <li><strong>F1 Score:</strong> {{ report.weighted_avg.f1_score }}</li>
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <h2>Predictions</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Predicted Churn</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer_id, prediction in report.predictions.items %}
+                <tr>
+                    <td>{{ customer_id }}</td>
+                    <td>
+                        {% if prediction == 1 %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>               
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'customer_list' %}" class="btn btn-primary">Back to Customer List</a>
+    </div>
+</div>
+
+</body>
+</html> 

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="https://www.clipartmax.com/png/middle/182-1821286_beautiful-black-woman-avatar-character-black-lady-cartoon.png" alt="Logo" style="height: 20px; float: right;" />
+        </div>
+        <div class="userprofile">
+            <img
+              src="https://www.clipartmax.com/png/middle/182-1821286_beautiful-black-woman-avatar-character-black-lady-cartoon.png"
+              class="profile"  
+            />
+            <!-- Display the logged-in user's username -->
+            {% if user.is_authenticated %}
+                <p style="color: black;">{{ user.username }}</p> <!-- Display the username -->
+            {% else %}
+                <p style="color: black;">Guest</p> <!-- If not logged in, show "Guest" -->
+            {% endif %}
+        </div>
+    </div>
+
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 1px 1px 4px 4px rgb(155, 153, 153);
+            background-color: white;
+        }
+
+        .logo img {
+            height: 20px; /* Adjust as needed */
+        }
+
+        .userprofile {
+            display: flex;
+            align-items: center;
+        }
+
+        .userprofile img {
+            border-radius: 50%;
+            height: 40px; /* Adjust as needed */
+            margin-right: 10px;
+        }
+    </style>
+</body>
+</html>

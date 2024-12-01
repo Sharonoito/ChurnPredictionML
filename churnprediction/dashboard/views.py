@@ -1,21 +1,30 @@
+# views.py
 from django.shortcuts import render
 
-# Create your views here.
-def dashboard_view(request):
-    # Your dashboard logic here
-    return render(request, 'dashboard/dashboard.html')
+def dashboard(request):
+    # Example data for the chart
+    bar_chart_data = [20, 30, 40, 50, 60, 70]
+    bar_chart_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+    
+    line_chart_data = [50, 40, 60, 80, 70, 60]
+    line_chart_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+    
+    context = {
+        'bar_chart_data': bar_chart_data,
+        'bar_chart_labels': bar_chart_labels,
+        'line_chart_data': line_chart_data,
+        'line_chart_labels': line_chart_labels
+    }
+    return render(request, 'dashboard.html', context)
 
-# from .models import ChurnPrediction, AnalyticsSummary
+# from django.shortcuts import render
+# from django.contrib.auth.decorators import login_required
+# from .models import ChurnPrediction
 
+# @login_required(login_url='/accounts/login/')
 # def dashboard_view(request):
-#     # Example of fetching the latest predictions
-#     recent_predictions = ChurnPrediction.objects.order_by('-prediction_date')[:10]
+#     predictions = ChurnPrediction.objects.all()
 
-#     # Example of fetching the latest analytics summary
-#     latest_summary = AnalyticsSummary.objects.latest('summary_date')
+#     return render(request, 'dashboard/churn_dashboard.html', {'predictions': predictions})
 
-#     context = {
-#         'recent_predictions': recent_predictions,
-#         'latest_summary': latest_summary,
-#     }
-#     return render(request, 'dashboard.html', context)
+
